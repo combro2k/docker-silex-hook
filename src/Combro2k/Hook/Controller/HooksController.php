@@ -2,19 +2,20 @@
 
 namespace Combro2k\Hook\Controller;
 
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 class HooksController extends Controller
 {
     /**
      * @param Request $request
-     * @param string  $uid
+     * @param string  $token
      *
-     * @return Response
+     * @return JsonResponse
      */
-    public function indexAction(Request $request, $uid)
+    public function postByUidAction(Request $request, $token)
     {
-        return new Response($uid);
+        return new Response('test', Response::HTTP_OK);
     }
 }

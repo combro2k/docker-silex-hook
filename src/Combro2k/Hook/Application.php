@@ -3,6 +3,7 @@ namespace Combro2k\Hook;
 
 use Combro2k\Hook\Controller\Controller;
 use Combro2k\Hook\Controller\HooksController;
+use Combro2k\Hook\Provider\HooksControllerProvider;
 use Silex\Application as BaseApplication;
 use Silex\Provider\DoctrineServiceProvider;
 use Silex\Provider\MonologServiceProvider;
@@ -12,12 +13,15 @@ use Silex\Provider\UrlGeneratorServiceProvider;
 use Silex\Provider\ValidatorServiceProvider;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * The Silex framework class.
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
+
+/** @noinspection PhpInconsistentReturnPointsInspection */
 class Application extends BaseApplication
 {
     use BaseApplication\TwigTrait;
@@ -37,7 +41,6 @@ class Application extends BaseApplication
     public function boot()
     {
         $this->registerProviders();
-        $this->beforeFilters();
         $this->setupControllers();
         $this->setupRoutes();
 
@@ -62,17 +65,37 @@ class Application extends BaseApplication
      */
     public function setupControllers()
     {
-        $this['controller'] = $this->share(function ($app) {
+        $this['controller'] = parent::share(function ($app) {
             return new Controller($app);
         });
 
-        $this['hooks.controller'] = $this->share(function ($app) {
+        $this['hooks.controller'] = parent::share(function ($app) {
             return new HooksController($app);
         });
 
         $this->error(function (\Exception $e) {
-            return $this['controller']->notHereAction();
+            return $this['controller']->indexAction();
         });
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return Response|void
+     */
+    public function beforeJsonFilter(Request $request)
+    {
+        if ($request->getContentType() === 'json') {
+            if (($data = trim($request->getContent())) === '') {
+                return new JsonResponse('Empty context!', Response::HTTP_EXPECTATION_FAILED);
+            } elseif (!$data = json_decode($data, true)) {
+                return new JsonResponse('Can not decode JSON', Response::HTTP_BAD_REQUEST);
+            }
+
+            $request->request->replace(is_array($data) ? $data : array());
+        }
+
+        return null;
     }
 
     /**
@@ -81,28 +104,22 @@ class Application extends BaseApplication
     public function setupRoutes()
     {
         /** Hooks route */
-        $this->get('/hooks/{uid}', 'hooks.controller:indexAction')->method('POST');
+        $this->mount('/hooks', new HooksControllerProvider());
     }
 
+
     /**
+     * @param Request  $request
+     * @param Response $response
      *
+     * @return JsonResponse|void
      */
-    public function beforeFilters()
+    public function afterJsonFilter(Request $request, Response $response)
     {
-        $this->before(function (Request $request) {
-            if ($request->getMethod() === 'GET') {
-                return true;
-            } elseif (false !== strpos($request->headers->get('Content-Type'), 'application/json')) {
-                return new JsonResponse(array('error' => 'Forbidden'), JsonResponse::HTTP_FORBIDDEN);
-            } elseif (!($data = $request->getContent())) {
-                return new JsonResponse(array('error' => 'No data!'), JsonResponse::HTTP_BAD_REQUEST);
-            } elseif (!($data = json_decode($data, true))) {
-                return new JsonResponse(array('error' => 'Can not decode JSON'), JsonResponse::HTTP_BAD_REQUEST);
-            }
+        if ($response instanceof JsonResponse === false && $request->getContentType() === 'json') {
+            //return new JsonResponse($response->getContent(), $response->getStatusCode(), $response->headers->all());
+        }
 
-            $request->request->replace(is_array($data) ? $data : array());
-
-            return true;
-        }, 0);
+        return $response;
     }
 }

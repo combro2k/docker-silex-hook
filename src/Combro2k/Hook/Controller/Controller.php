@@ -45,7 +45,7 @@ class Controller
     /**
      * @return Response
      */
-    public function notHereAction()
+    public function indexAction()
     {
         return $this->getApp()
             ->render('index.twig', array());

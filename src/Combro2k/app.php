@@ -2,8 +2,7 @@
 
 namespace Combro2k;
 
-require_once dirname(__DIR__).'/../vendor/autoload.php';
-
-$app = new Hook\Application();
-
+$rootPath = dirname(dirname(__DIR__));
+require_once($rootPath.'/vendor/autoload.php');
+$app = new Hook\Application(array('rootPath' => $rootPath));
 return $app;
