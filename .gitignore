@@ -1,4 +1,6 @@
 vendor/
 composer.lock
 .idea/
-logs/*.log
+logs/*
+config/*.yml
+!config/config.dist.yml

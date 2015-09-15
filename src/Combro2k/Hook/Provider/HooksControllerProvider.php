@@ -1,10 +1,10 @@
 <?php
 namespace Combro2k\Hook\Provider;
 
-use Silex\Application;
+use Combro2k\Hook\Application;
+use Silex\Application as BaseApplication;
 use Silex\ControllerCollection;
 use Silex\ControllerProviderInterface;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class HooksControllerProvider
@@ -15,21 +15,19 @@ class HooksControllerProvider implements ControllerProviderInterface
     /**
      * Returns routes to connect to the given application.
      *
-     * @param Application $app An Application instance
+     * @param BaseApplication $app An Application instance
      *
      * @return ControllerCollection A ControllerCollection instance
      */
-    public function connect(Application $app)
+    public function connect(BaseApplication $app)
     {
-        /** @var \Silex\ControllerCollection $factory */
-        $factory = $app['controllers_factory'];
+        /** @var Application $app */
+        $factory = $app->getControllerFactory();
 
         $factory->post('/{token}', 'hooks.controller:postByUidAction')
-            ->before(function (Request $request, Application $app) {
-                /** @var \Combro2k\Hook\Application $app */
-                return $app->beforeJsonFilter($request);
-            })
-            ->bind('postByUidAction');
+                ->before('hooks.controller:beforeJsonFilter')
+                ->after('hooks.controller:afterJsonFilter')
+                ->bind('postByUidAction');
 
         return $factory;
     }

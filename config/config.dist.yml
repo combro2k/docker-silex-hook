@@ -1,0 +1,11 @@
+# App Settings
+owner: example
+
+# Database SQLite3 settings
+database:
+  path: data/database.db
+
+# Log settings
+loggings:
+  file: logs/application.log
+  syslog: false
