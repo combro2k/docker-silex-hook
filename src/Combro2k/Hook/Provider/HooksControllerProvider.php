@@ -1,7 +1,7 @@
 <?php
 namespace Combro2k\Hook\Provider;
 
-use Combro2k\Hook\Application;
+use Combro2k\Application;
 use Silex\Application as BaseApplication;
 use Silex\ControllerCollection;
 use Silex\ControllerProviderInterface;

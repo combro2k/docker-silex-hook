@@ -1,8 +1,8 @@
 <?php
 
-namespace Combro2k\Hook;
+namespace Combro2k;
 
-use Combro2k\Hook\Controller\Controller;
+use Combro2k\Hook\Controller;
 use Combro2k\Hook\Controller\HooksController;
 use Combro2k\Hook\Provider\ConfigServiceProvider;
 use Combro2k\Hook\Provider\HooksControllerProvider;

@@ -1,5 +1,8 @@
 <?php
-/** @var Combro2k\Hook\Application $app */
-$rootDir = dirname(__DIR__);
-$app = require_once($rootDir.'/src/Combro2k/app.php');
+require_once(__DIR__.'/../vendor/autoload.php');
+
+use Combro2k\Application;
+
+$rootPath = dirname(__DIR__);
+$app = new Application(array('rootPath' => $rootPath));
 $app->run();

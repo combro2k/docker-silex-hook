@@ -2,6 +2,7 @@
 
 namespace Combro2k\Hook\Controller;
 
+use Combro2k\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

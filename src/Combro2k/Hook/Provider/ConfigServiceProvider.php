@@ -2,6 +2,7 @@
 
 namespace Combro2k\Hook\Provider;
 
+use Combro2k\Application;
 use Silex\Application as BaseApplication;
 use Silex\ServiceProviderInterface;
 use Symfony\Component\Yaml\Yaml;
@@ -52,7 +53,7 @@ class ConfigServiceProvider implements ServiceProviderInterface
      */
     public function boot(BaseApplication $app)
     {
-        /** @var \Combro2k\Hook\Application $app */
+        /** @var Application $app */
         $app->setConfig($app['config']);
     }
 }

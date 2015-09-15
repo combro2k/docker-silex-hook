@@ -1,8 +1,8 @@
 <?php
 
-namespace Combro2k\Hook\Controller;
+namespace Combro2k\Hook;
 
-use Combro2k\Hook\Application;
+use Combro2k\Application;
 use Symfony\Bridge\Monolog\Logger;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
